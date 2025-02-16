@@ -1,3 +1,7 @@
+#ifndef DATATYPE_H
+#define DATATYPE_H
+#pragma once
+
 struct Date {
 	int day, month, year;
 };
@@ -21,3 +25,12 @@ struct Order {
 	struct Date date;
 	struct Product product;
 };
+
+extern const char *filePro;
+extern const char *fileCate;
+extern struct Product dataPro[100];
+extern struct Category dataCate[100];
+extern int currentCate;
+extern int currentPro;
+
+#endif

@@ -5,16 +5,38 @@
 #include "../include/product.h"
 #include "../include/datatype.h"
 
-void showProduct() {
+struct Product dataProU[100];
+struct Category dataCategoryU[100];
+int currentCategoryU = 0;
+int currentProU = 0;
+
+void productFile(char *mode) {
+	FILE *fptrPro = fopen("../data/product.bin", mode);
+	FILE *fptrCate = fopen("../data/category.bin", "rb");
+	if (fptrPro == NULL  || fptrCate == NULL) {
+		printf("Loi mo file\n");
+		return;
+	}
+	if (strcmp(mode, "wb") == 0) {
+		fwrite(dataPro, sizeof(struct Product), currentPro, fptrPro);
+	}else {
+		currentPro = fread(dataPro, sizeof(struct Product), 100, fptrPro);
+		currentCategory = fread(dataCategory, sizeof(struct Category), 100, fptrCate);
+	}
+	fclose(fptrPro);
+	fclose(fptrCate);
+}
+
+void showProductUser() {
 	if (currentPro == 0) {
 		printf("The product is empty!");
 		return;
 	}
 	printf("|%-12s|%-12s|%-20s|%-12s|%-12s|\n", "============", "============", "====================", "============", "============");
-	printf("|%-12s|%-12s|%-20s|%-12s|%-12s|\n", "Product ID", "Category ID", "Product Name", "Quantity", "Price");
+	printf("|%-12s|%-12s|%-20s|%-12s|%-12s|\n", "Product ID", "Category Name", "Product Name", "Quantity", "Price");
 	printf("|%-12s|%-12s|%-20s|%-12s|%-12s|\n", "============", "============", "====================", "============", "============");
 	for (int i = 0; i < currentPro; i++) {
-		printf("|%-12s|%-12s|%-20s|%-12d|%-12d|\n", dataPro[i].productId, dataPro[i].categoryId, dataPro[i].productName, dataPro[i].quantity, dataPro[i].price);
+		printf("|%-12s|%-12s|%-20s|%-12d|%-12d|\n", dataPro[i].productId, dataPro[i]., dataPro[i].productName, dataPro[i].quantity, dataPro[i].price);
 		printf("|%-12s|%-12s|%-20s|%-12s|%-12s|\n", "------------", "------------", "--------------------", "------------", "------------");
 	}
 }
@@ -60,14 +82,14 @@ void addProduct() {
 	} while(check);
 	strcpy(dataPro[currentPro].productId, productId);
 
-	char categoryId[sizeof(dataCate->categoryId)];
+	char categoryId[sizeof(dataCategory->categoryId)];
 	check = 1;
 	do {
 		inputCharValue("Enter the category ID: ", sizeof(categoryId), categoryId);
 
 		check = 1;
-		for (int i = 0; i < currentCate; i ++) {
-			if (strcmp(categoryId, dataCate[i].categoryId) == 0) {
+		for (int i = 0; i < currentCategory; i ++) {
+			if (strcmp(categoryId, dataCategory[i].categoryId) == 0) {
 				check = 0;
 				break;
 			}
@@ -83,18 +105,17 @@ void addProduct() {
 	inputIntValue("Enter the price", &dataPro[currentPro].price);
 
 	(currentPro)++;
-	workBinaryFile(filePro, "wb", dataPro, &currentPro, sizeof(struct Product));
-	//productFile("wb");
+	productFile("wb");
 	printf("Product added successfully\n");
 }
 
 void editProduct() {
-	char categoryId[sizeof(dataCate->categoryId)];
+	char categoryId[sizeof(dataCategory->categoryId)];
 	char productName[sizeof(dataPro->productName)];
 	int quantity;
 	int price;
 
-	int pos = findPosProduct(dataCate, currentCate);
+	int pos = findPosProduct(dataCategory, currentCategory);
 	infoProduct(pos);
 
 	printf("\t **** Update The New Category ****\n");
@@ -103,8 +124,8 @@ void editProduct() {
 		inputCharValue("Enter the new category ID (0 for skip)", sizeof(categoryId), categoryId);
 
 		if (strcmp(categoryId, "0") != 0) {
-			for (int i = 0; i < currentCate; i++) {
-				if (strcmp(dataCate[i].categoryId, categoryId) == 0) {
+			for (int i = 0; i < currentCategory; i++) {
+				if (strcmp(dataCategory[i].categoryId, categoryId) == 0) {
 					strcpy(dataPro[pos].categoryId, categoryId);
 					check = 0;
 					break;
@@ -132,8 +153,8 @@ void editProduct() {
 	if (price != 0) {
 		dataPro[pos].price = price;
 	}
-	workBinaryFile(filePro, "wb", dataPro, &currentPro, sizeof(struct Product));
-	//productFile("wb");
+
+	productFile("wb");
 	printf("Product Updated Successfully\n");
 }
 
@@ -145,7 +166,7 @@ void deleteProduct() {
 		dataPro[i] = dataPro[i+1];
 	}
 	currentPro--;
-	workBinaryFile(filePro, "wb", dataPro, &currentPro, sizeof(struct Product));
+	productFile("wb");
 	printf("Product Deleted Successfully\n");
 }
 
@@ -219,14 +240,14 @@ void menuSortPro() {
 }
 
 void nameFilter() {
-	char name[sizeof(dataCate->categoryName)];
+	char name[sizeof(dataCategory->categoryName)];
 	char id[10];
 	inputCharValue("Enter the category name: ", sizeof(name), name);
 
 	int checkCate = 1;
-	for (int i = 0; i < currentCate; i++) {
-		if (strcmp(name, dataCate[i].categoryName) == 0) {
-			strcpy(id, dataCate[i].categoryId);
+	for (int i = 0; i < currentCategory; i++) {
+		if (strcmp(name, dataCategory[i].categoryName) == 0) {
+			strcpy(id, dataCategory[i].categoryId);
 			checkCate = 0;
 			break;
 		}
@@ -277,17 +298,15 @@ void priceFilter() {
 		printf("There are no products priced between %d and %d\n", min, max);
 	}
 }
-void showProductMenu() {
-	printf("%20s\n", "Product MENU");
+void showUserMenu() {
+	printf("%20s\n", "USER MENU");
 	printf("==============================\n");
 	printf("1. Show all products\n");
-	printf("2. Add a new product\n");
-	printf("3. Edit a product\n");
-	printf("4. Delete a product\n");
-	printf("5. Find product\n");
-	printf("6. Sort product\n");
-	printf("7. Filter product\n");
-	printf("8. Exit\n");
+	printf("2. Find product\n");
+	printf("3. Sort product\n");
+	printf("4. Filter product\n");
+	printf("5. Buy product\n");
+	printf("6. Exit\n");
 	printf("==============================\n");
 }
 
@@ -313,8 +332,7 @@ void menuFilter() {
 }
 
 void manageProduct() {
-	workBinaryFile(filePro, "rb", dataPro, &currentPro, sizeof(struct Product));
-	workBinaryFile(fileCate, "rb", dataCate, &currentCate, sizeof(struct Category));
+	productFile("rb");
 	while (1) {
 		system("cls");
 		showProductMenu();

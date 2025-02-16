@@ -1,4 +1,3 @@
-void categoryFile(char *mode);
 
 int findPosCategory();
 void infoCategory(int pos);
@@ -15,5 +14,4 @@ void descendSortCate();
 void showCategoryMenu();
 void menuSortCate();
 void manageCategory();
-
 

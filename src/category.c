@@ -4,22 +4,6 @@
 #include "../include/function.h"
 #include "../include/category.h"
 #include "../include/datatype.h"
-struct Category dataCate[100];
-int currentCate = 0;
-
-void categoryFile(char *mode) {
-	FILE *fptr = fopen("../data/category.bin", mode);
-	if (fptr == NULL) {
-		printf("Loi mo file");
-		return;
-	}
-	if (strcmp(mode, "wb") == 0) {
-		fwrite(dataCate, sizeof(struct Category), currentCate, fptr);
-	}else {
-		currentCate = fread(dataCate, sizeof(struct Category), 100, fptr);
-	}
-	fclose(fptr);
-}
 
 void showCategory() {
 	if (currentCate == 0) {
@@ -75,7 +59,7 @@ void addCategory() {
 	inputCharValue("Enter the category name", sizeof(dataCate->categoryName), dataCate[currentCate].categoryName);
 
 	(currentCate)++;
-	categoryFile("wb");
+	workBinaryFile(fileCate, "wb", dataCate, &currentCate, sizeof(struct Category));
 	printf("Category added successfully\n");
 }
 
@@ -91,7 +75,7 @@ void editCategory() {
 		strcpy(dataCate[pos].categoryName, name);
 	}
 
-	categoryFile("wb");
+	workBinaryFile(fileCate, "wb", dataCate, &currentCate, sizeof(struct Category));
 	printf("Category Updated Successfully\n");
 }
 
@@ -103,7 +87,7 @@ void deleteCategory() {
 		dataCate[i] = dataCate[i+1];
 	}
 	(currentCate)--;
-	categoryFile("wb");
+	workBinaryFile(fileCate, "wb", dataCate, &currentCate, sizeof(struct Category));
 	printf("Category Deleted Successfully\n");
 }
 
@@ -191,7 +175,7 @@ void showCategoryMenu() {
 }
 
 void manageCategory() {
-	categoryFile("rb");
+	workBinaryFile(fileCate, "rb", dataCate, &currentCate, sizeof(struct Category));
 	while (1) {
 		showCategoryMenu();
 		int choice = inputChoice();
