@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/le phu thinh/Desktop/C_Store_Management/cmake-build-debug",
-		"source" : "C:/Users/le phu thinh/Desktop/C_Store_Management"
+		"build" : "C:/Users/le phu thinh/Desktop/hello/cmake-build-debug",
+		"source" : "C:/Users/le phu thinh/Desktop/hello"
 	},
 	"version" : 
 	{

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/le phu thinh/Desktop/C_Store_Management
+# Install script for directory: C:/Users/le phu thinh/Desktop/hello
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -52,6 +52,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "C:/Users/le phu thinh/Desktop/C_Store_Management/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "C:/Users/le phu thinh/Desktop/hello/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/le phu thinh/Desktop/C_Store_Management/cmake-build-debug"
+			"value" : "c:/Users/le phu thinh/Desktop/hello/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -431,7 +431,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/le phu thinh/Desktop/C_Store_Management/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "C:/Users/le phu thinh/Desktop/hello/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/le phu thinh/Desktop/C_Store_Management"
+			"value" : "C:/Users/le phu thinh/Desktop/hello"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1135,7 +1135,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/le phu thinh/Desktop/C_Store_Management/cmake-build-debug"
+			"value" : "C:/Users/le phu thinh/Desktop/hello/cmake-build-debug"
 		},
 		{
 			"name" : "C_Store_Management_IS_TOP_LEVEL",
@@ -1159,7 +1159,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/le phu thinh/Desktop/C_Store_Management"
+			"value" : "C:/Users/le phu thinh/Desktop/hello"
 		},
 		{
 			"name" : "_CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED",

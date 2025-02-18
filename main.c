@@ -10,6 +10,9 @@ int currentCate = 0;
 int currentPro = 0;
 int currentUser = 0;
 
+int totalUserOrder = 0;
+int totalCart = 0;
+
 const char *filePro = "../data/product.bin";
 const char *fileCate = "../data/category.bin";
 const char *fileUser = "../data/user.bin";

@@ -21,15 +21,24 @@ struct Product {
 
 struct Order {
 	char orderId[10];
+	int totalPrice;
+	int amountProduct;
 	struct Date date;
-	struct Product product;
+	struct Product product[20];
+};
+
+struct Cart {
+	struct Product product[20];
 };
 
 struct User {
 	char customerId[10];
 	char customerName[20];
 	char password[20];
-	struct Order order;
+	int totalOrder;
+	int totalCart;
+	struct Cart cart;
+	struct Order order[20];
 };
 
 extern const char *filePro;
@@ -43,6 +52,9 @@ extern struct Category dataCate[100];
 extern int currentCate;
 extern int currentPro;
 extern int currentUser;
+
+extern int totalUserOrder;
+extern int totalCart;
 
 
 #endif

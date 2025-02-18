@@ -20,6 +20,65 @@ void workBinaryFile(const char *filePath, char *mode, void *data, int *current, 
 	fclose(fptr);
 }
 
+void billList(int userPos, int page, int totalProduct, int isAdmin) {
+	system("cls");
+	char date[20] = "";
+	sprintf(date, "%d%s%d%s%d", dataUser[userPos].order[page].date.day, "/" ,dataUser[userPos].order[page].date.month, "/" ,dataUser[userPos].order[page].date.year);
+	printf("|==================================================|\n");
+	printf("|%27s%23s|\n","RECEIPT", "");
+	printf("|--------------------------------------------------|\n");
+	printf("|%-35s%15s|\n","Order ID:",dataUser[userPos].order[page].orderId);
+	printf("|%-35s%15s|\n","Customer ID:", dataUser[userPos].customerId);
+	printf("|%-35s%15s|\n","Date:", date);
+	printf("|--------------------------------------------------|\n");
+	printf("|%-20s%-10s%-10s%-10s|\n", "Product", "Price", "Amount", "Total");
+	printf("|--------------------------------------------------|\n");
+	for (int i = 0; i < totalProduct; i++) {
+		printf("|%-20s%-10d%-10d%-10d|\n", dataUser[userPos].order[page].product[i].productName, dataUser[userPos].order[page].product[i].price, dataUser[userPos].order[page].product[i].quantity, dataUser[userPos].order[page].product[i].quantity*dataUser[userPos].order[page].product[i].price);
+	}
+	printf("|--------------------------------------------------|\n");
+	printf("|%-35s%15d|\n", "TOTAL:", dataUser[userPos].order[page].totalPrice);
+	printf("|--------------------------------------------------|\n");
+	printf("|%28s%22s|\n", "THANK YOU", "");
+	printf("|==================================================|\n\n");
+	if (isAdmin == 0) {
+		printf("%-19s--PAGE %d/%d--\n\n", "", page+1, totalUserOrder);
+	}
+}
+
+int switchPage(int *page) {
+	do {
+		printf("Press < to back, > to next, b for menu\n");
+		printf("Enter your choice: ");
+
+		char choice[2];
+		fflush(stdin);
+		fgets(choice, 2, stdin);
+		choice[strcspn(choice, "\n")] = '\0';
+		if (strcmp(choice, "<") == 0) {
+			if (*page > 0) {
+				(*page)--;
+			}else {
+				printf("You are on the first page\n");
+			}
+		}else if (strcmp(choice, ">") == 0) {
+			if (*page < totalUserOrder-1) {
+				(*page)++;
+			}else {
+				printf("You are on the last page\n");
+			}
+		}else if (strcmp(choice, "b") == 0) {
+			return 1;
+		}else {
+			printf("Error: Invalid choice\n");
+			continue;
+		}
+		break;
+	} while (1);
+	system("cls");
+	return 0;
+}
+
 int inputChoice() {
 	int choice;
 	printf(">> Enter the choice: ");
@@ -27,9 +86,9 @@ int inputChoice() {
 	return choice;
 }
 
-char confirmExitOrBack() {
+char confirmChoice(char *input) {
 	char choice;
-	printf(">> Go back(b)? or exit(0)?: ");
+	printf(">> %s", input);
 	fflush(stdin);
 	scanf("%c", &choice);
 	fflush(stdin);
@@ -52,7 +111,7 @@ void inputCharValue(char *input, int max, char *value) {
 		temp[strcspn(temp, "\n")] = '\0';
 
 		if (strlen(temp) == max) {
-			printf("Error: Character limit exceeded\n");
+			printf("Error: Character limit exceeded (max: %d)\n", max-1);
 			continue;
 		}
 
@@ -83,7 +142,9 @@ void showAdminMenu() {
 		printf("==============================\n");
 		printf("1. Manage Category\n");
 		printf("2. Manage Product\n");
-		printf("3. Exit\n");
+		printf("3. View Bill List\n");
+		printf("4. View Revenue\n");
+		printf("5. Exit\n");
 		printf("==============================\n");
 		int choice = inputChoice();
 		switch (choice) {
@@ -94,6 +155,12 @@ void showAdminMenu() {
 				manageProduct();
 				break;
 			case 3:
+				menuOrder();
+				break;
+			case 4:
+				showRevenue();
+				break;
+			case 5:
 				return;
 			default:
 				printf("Error: Invalid choice");
@@ -140,6 +207,7 @@ void loginAdmin() {
 }
 
 void loginUser() {
+	int userPos = 0;
 	while (1) {
 		char temp[2];
 		char username[10];
@@ -155,6 +223,9 @@ void loginUser() {
 		for (int i = 0; i < currentUser; i++) {
 			if (strcmp(dataUser[i].customerId, username) == 0) {
 				if (strcmp(dataUser[i].password, password) == 0) {
+					userPos = i;
+					totalUserOrder = dataUser[i].totalOrder;
+					totalCart = dataUser[i].totalCart;
 					check = 1;
 					break;
 				}
@@ -169,13 +240,14 @@ void loginUser() {
 
 		printf("Error: username or password is incorrect\n");
 		printf(">> Press [Enter] to retry");
-
 		fgets(temp, 2, stdin);
 	}
-	manageUser();
+
+	manageUser(userPos);
 }
 
 void regUser() {
+	int userPos = currentUser;
 	while (1) {
 		char temp[2];
 		char password[sizeof(dataUser->password)];
@@ -184,10 +256,15 @@ void regUser() {
 		char passwordConfirm[sizeof(dataUser->password)];
 
 		system("cls");
-
 		printf("%18s\n", "USER REGISTER");
 		printf("==========================\n");
 		inputCharValue("Username", sizeof(username), username);
+		if (username[strcspn(username, " ")] != strlen(username)) {
+			printf("Error: Username cannot contain spaces\n");
+			printf(">> Press [Enter] to retry");
+			fgets(temp, 2, stdin);
+			continue;
+		}
 		inputCharValue("Display Name", sizeof(nameDisplay), nameDisplay);
 		inputCharValue("Password", sizeof(password), password);
 		inputCharValue("Confirm your password", sizeof(passwordConfirm), passwordConfirm);
@@ -211,6 +288,8 @@ void regUser() {
 			strcpy(dataUser[currentUser].customerName, nameDisplay);
 			strcpy(dataUser[currentUser].customerId, username);
 			strcpy(dataUser[currentUser].password, password);
+			dataUser[currentUser].totalOrder = 0;
+
 			currentUser++;
 
 			workBinaryFile(fileUser, "wb", dataUser, &currentUser, sizeof(struct User));
@@ -222,11 +301,11 @@ void regUser() {
 		printf("Error: Passwords do not match\n");
 		printf(">> Press [Enter] to retry");
 		fgets(temp, 2, stdin);
+
 	}
-		manageUser();
+		manageUser(userPos);
 }
 void userMenu() {
-	workBinaryFile(fileUser, "rb", dataUser, &currentUser, sizeof(struct User));
 	while (1) {
 		system("cls");
 		printf("%25s\n", "User Authentication");
@@ -253,6 +332,7 @@ void userMenu() {
 }
 
 void showMainMenu() {
+	workBinaryFile(fileUser, "rb", dataUser, &currentUser, sizeof(struct User));
 	while (1) {
 		system("cls");
 		printf("%20s\n", "ROLE");

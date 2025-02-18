@@ -7,7 +7,7 @@
 
 void showCategory() {
 	if (currentCate == 0) {
-		printf("The category is empty!");
+		printf("The category is empty!\n");
 		return;
 	}
 	printf("|%-20s|%-10s|\n", "====================", "==========");
@@ -82,6 +82,15 @@ void editCategory() {
 void deleteCategory() {
 	int pos = findPosCategory(dataCate, currentCate);
 	infoCategory(pos);
+	do {
+		char answer = confirmChoice("Confirm delete [Y/N]: ");
+		if (answer == 'Y') {
+			break;
+		}else if (answer == 'N') {
+			return;
+		}
+	}while (1);
+
 
 	for (int i = pos; i < currentCate-1; i++) {
 		dataCate[i] = dataCate[i+1];
@@ -205,7 +214,7 @@ void manageCategory() {
 			break;
 		}
 		while (1) {
-			char answer = confirmExitOrBack();
+			char answer = confirmChoice("Go back(b)? or exit(0)?: ");
 			if (answer == '0') {
 				return;
 			}else if (answer == 'b') {
